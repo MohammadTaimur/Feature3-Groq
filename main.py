@@ -226,7 +226,7 @@ async def generate_questions(
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
 
-@app.post("/generating-scenario/")
+@app.post("/generate-scenario/")
 async def generating_scenario(
     situation: str = Form(None)
 ):
