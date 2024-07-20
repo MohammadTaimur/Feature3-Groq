@@ -226,12 +226,54 @@ async def generate_questions(
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
 
+@app.post("/generating-scenario/")
+async def generating_scenario(
+    situation: str = Form(None)
+):
+    if situation is None:
+        raise HTTPException(status_code=400, detail="Missing situation")
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": """ You are an expert in teaching English to Foreign Beginners. Your task is to help them navigate various real-life situations by generating dialogues.
+    
+                    Input:
+                    - A situation in the form of a string. For exmaple "Ordering Coffee" or "Booking a Hotel" etc.
+    
+                    Instructions:
+                    - Create a simple and clear dialogue between the user and another person (e.g., barista, cashier, Receptionist etc.).
+                    - Include common phrases and vocabulary relevant to the situation but do not highlight it.
+                    - Make the conversation easy to follow and understand.
+    
+                    Output Format:  
+                    - Situation: {situation}
+                    - Dialogue: (Remove the heading "Dialogue")
+                      [User]
+                      [Other Person]
+    
+                     """
+                },
+                {
+                    "role": "user",
+                    "content": situation,
+                }
+            ],
+            model="llama3-70b-8192",
+        )
+
+        output = chat_completion.choices[0].message.content
+        return output
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 @app.post("/checking-grammar")
 async def checking_grammar(
         grammartext: str = Form(None)
 ):
     if grammartext is None:
-        raise HTTPException(status_code=400, detail="Missing question")
+        raise HTTPException(status_code=400, detail="Missing Text")
     try:
         chat_completion = client.chat.completions.create(
             messages=[
