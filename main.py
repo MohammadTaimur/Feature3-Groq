@@ -264,7 +264,10 @@ async def generating_scenario(
         )
 
         output = chat_completion.choices[0].message.content
-        return output
+        result = {
+            "scenario":output
+        }
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -310,6 +313,16 @@ async def checking_grammar(
             model="llama3-70b-8192",
         )
         output = chat_completion.choices[0].message.content
-        return output
+        if output == "":
+            result = {
+                "grammar": False,
+                "result": output
+            }
+        else:
+            result = {
+                "grammar": True,
+                "result": output
+            }
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
