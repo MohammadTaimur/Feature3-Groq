@@ -313,7 +313,8 @@ async def checking_grammar(
             model="llama3-70b-8192",
         )
         output = chat_completion.choices[0].message.content
-        if output == "":
+        print(output)
+        if output == "The grammar is correct":
             result = {
                 "grammar": False,
                 "result": output
