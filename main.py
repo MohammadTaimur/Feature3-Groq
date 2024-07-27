@@ -52,7 +52,6 @@ async def generate_answers(
         output = chat_completion.choices[0].message.content
         # Split the input string into lines
         lines = output.strip().split('\n')
-        print(len(lines))
         if len(lines) == 1:
             result = {
                 "IncorrectQuestion" : lines
@@ -99,7 +98,8 @@ async def generate_questions(
                      Instructions:
                      1. Input: 
                      - A topic in the form of a string. For example: "Weather" or "Personal Computers" or "Cartoons"
-
+                     - If no relevent topic is entered, respond with, "Please enter an appropriate Topic"
+                    
                      2. Processing Instructions:
                      - Generate 10 different questions related to the topic.
                      - Vary the starting words of the questions to avoid repetition.
@@ -109,6 +109,7 @@ async def generate_questions(
                      - Each question should be simple and easy to understand.
                      - Provide a simple answer(2 lines) for each simple question.
                      - Return only the questions and answers in the exact format specified.
+                     - If no relevent topic is entered, respond with, "Please enter an appropriate Topic"
 
                      3. Output Format: 
 
@@ -135,99 +136,105 @@ async def generate_questions(
         # Split the output into lines
         lines = output.strip().split("\n")
 
-        empty_line_count = 0
-        separator_index = None
+        if len(lines) == 1:
+            result = {
+                "IncorrectTopic" : lines
+            }
 
-        for i, line in enumerate(lines):
-            if line.strip() == "":
-                empty_line_count += 1
-                if empty_line_count == 2:
-                    separator_index = i
-                    break
+        else:
+            empty_line_count = 0
+            separator_index = None
 
-        # Find the index of the line that separates questions and answers
-        # separator_index = lines.index("")
+            for i, line in enumerate(lines):
+                if line.strip() == "":
+                    empty_line_count += 1
+                    if empty_line_count == 2:
+                        separator_index = i
+                        break
 
-        # Split the lines into questions and answers based on the separator
-        questions = lines[1:separator_index]  # Skipping the first two lines and the separator line
-        answers = lines[separator_index + 1:]
+            # Find the index of the line that separates questions and answers
+            # separator_index = lines.index("")
 
-        # Store questions and answers in separate variables
-        questions_str = "\n".join(questions)
-        answers_str = "\n".join(answers)
+            # Split the lines into questions and answers based on the separator
+            questions = lines[1:separator_index]  # Skipping the first two lines and the separator line
+            answers = lines[separator_index + 1:]
 
-        # print(questions_str)
-        # print(answers_str)
+            # Store questions and answers in separate variables
+            questions_str = "\n".join(questions)
+            answers_str = "\n".join(answers)
 
-        questions = [q.strip().lstrip('-').strip() for q in questions_str.strip().split('\n') if q]
-        answers = [a.strip().lstrip('-').strip() for a in answers_str.strip().split('\n') if a]
+            # print(questions_str)
+            # print(answers_str)
 
-        question1 = questions[0]
-        question2 = questions[1]
-        question3 = questions[2]
-        question4 = questions[3]
-        question5 = questions[4]
-        question6 = questions[5]
-        question7 = questions[6]
-        question8 = questions[7]
-        question9 = questions[8]
-        question10 = questions[9]
+            questions = [q.strip().lstrip('-').strip() for q in questions_str.strip().split('\n') if q]
+            answers = [a.strip().lstrip('-').strip() for a in answers_str.strip().split('\n') if a]
 
-        answer1 = answers[0]
-        answer2 = answers[1]
-        answer3 = answers[2]
-        answer4 = answers[3]
-        answer5 = answers[4]
-        answer6 = answers[5]
-        answer7 = answers[6]
-        answer8 = answers[7]
-        answer9 = answers[8]
-        answer10 = answers[9]
+            question1 = questions[0]
+            question2 = questions[1]
+            question3 = questions[2]
+            question4 = questions[3]
+            question5 = questions[4]
+            question6 = questions[5]
+            question7 = questions[6]
+            question8 = questions[7]
+            question9 = questions[8]
+            question10 = questions[9]
 
-        # print(question1)
-        # print(question2)
-        # print(question3)
-        # print(question4)
-        # print(question5)
-        # print(question6)
-        # print(question7)
-        # print(question8)
-        # print(question9)
-        # print(question10)
-        #
-        # print(answer1)
-        # print(answer2)
-        # print(answer3)
-        # print(answer4)
-        # print(answer5)
-        # print(answer6)
-        # print(answer7)
-        # print(answer8)
-        # print(answer9)
-        # print(answer10)
+            answer1 = answers[0]
+            answer2 = answers[1]
+            answer3 = answers[2]
+            answer4 = answers[3]
+            answer5 = answers[4]
+            answer6 = answers[5]
+            answer7 = answers[6]
+            answer8 = answers[7]
+            answer9 = answers[8]
+            answer10 = answers[9]
 
-        result = {
-            "question1": question1,
-            "question2": question2,
-            "question3": question3,
-            "question4": question4,
-            "question5": question5,
-            "question6": question6,
-            "question7": question7,
-            "question8": question8,
-            "question9": question9,
-            "question10": question10,
-            "answer1": answer1,
-            "answer2": answer2,
-            "answer3": answer3,
-            "answer4": answer4,
-            "answer5": answer5,
-            "answer6": answer6,
-            "answer7": answer7,
-            "answer8": answer8,
-            "answer9": answer9,
-            "answer10": answer10
-        }
+            # print(question1)
+            # print(question2)
+            # print(question3)
+            # print(question4)
+            # print(question5)
+            # print(question6)
+            # print(question7)
+            # print(question8)
+            # print(question9)
+            # print(question10)
+            #
+            # print(answer1)
+            # print(answer2)
+            # print(answer3)
+            # print(answer4)
+            # print(answer5)
+            # print(answer6)
+            # print(answer7)
+            # print(answer8)
+            # print(answer9)
+            # print(answer10)
+
+            result = {
+                "question1": question1,
+                "question2": question2,
+                "question3": question3,
+                "question4": question4,
+                "question5": question5,
+                "question6": question6,
+                "question7": question7,
+                "question8": question8,
+                "question9": question9,
+                "question10": question10,
+                "answer1": answer1,
+                "answer2": answer2,
+                "answer3": answer3,
+                "answer4": answer4,
+                "answer5": answer5,
+                "answer6": answer6,
+                "answer7": answer7,
+                "answer8": answer8,
+                "answer9": answer9,
+                "answer10": answer10
+            }
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
