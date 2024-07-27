@@ -28,12 +28,14 @@ async def generate_answers(
                      Instructions:
                      1. Input: 
                      - A short question in the form of a string. For example: "What is your favorite food?"
+                     - If no relevent question is asked, respond with, "Please ask an appropriate question"
 
                      2. Processing Instructions:
                      - Generate 5 different answers.
                      - Each answer should be line by line separately.
                      - Answer every part of the question (if more than 2).
                      - Frame each answer as a personal preference. For example: "I like pizza", "I like chicken and rice", etc.
+                     - If no relevent question is asked, respond with, "Please ask an appropriate question".
 
                      3. Output Format: 
                      - Return the answers in the following format: "I like pizza", "I like chicken and rice", ... (up to 5 answers).
@@ -50,29 +52,33 @@ async def generate_answers(
         output = chat_completion.choices[0].message.content
         # Split the input string into lines
         lines = output.strip().split('\n')
+        print(len(lines))
+        if len(lines) == 1:
+            result = {
+                "IncorrectQuestion" : lines
+            }
+        else:
+            # Assign each line to a standalone variable
+            option1 = lines[0]
+            option2 = lines[1]
+            option3 = lines[2]
+            option4 = lines[3]
+            option5 = lines[4]
 
-        # Assign each line to a standalone variable
-        option1 = lines[0]
-        option2 = lines[1]
-        option3 = lines[2]
-        option4 = lines[3]
-        option5 = lines[4]
+            # Print the variables to verify
+            # print(option1)
+            # print(option2)
+            # print(option3)
+            # print(option4)
+            # print(option5)
 
-        # Print the variables to verify
-        print(option1)
-        print(option2)
-        print(option3)
-        print(option4)
-        print(option5)
-
-        result = {
-            "option1": option1,
-            "option2": option2,
-            "option3": option3,
-            "option4": option4,
-            "option5": option5,
-        }
-
+            result = {
+                "option1": option1,
+                "option2": option2,
+                "option3": option3,
+                "option4": option4,
+                "option5": option5,
+            }
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
