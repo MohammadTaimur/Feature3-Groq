@@ -259,12 +259,16 @@ async def generating_scenario(
                     - Create a simple and clear dialogue between the user and another person (e.g., barista, cashier, Receptionist etc.).
                     - Include common phrases and vocabulary relevant to the situation but do not highlight it.
                     - Make the conversation easy to follow and understand.
+                    - Always encase the participant roles in square brackets.
+                    - The conversation must never be started by the user.
     
                     Output Format:  
                     - Situation: {situation}
                     - Dialogue: (Remove the heading "Dialogue")
                       [User]
+                      dialogue--
                       [Other Person]
+                      dialogue--
     
                      """
                 },
@@ -277,8 +281,38 @@ async def generating_scenario(
         )
 
         output = chat_completion.choices[0].message.content
+        # print(output)
+        lines = output.split('\n')
+
+        # Initialize empty lists to hold the parts of the conversation
+        bot_parts = []
+        user_parts = []
+
+        # Flag to determine if the current speaker is the bot
+        is_bot_turn = False
+
+        # Iterate through the lines and categorize them
+        for line in lines:
+            stripped_line = line.strip()
+            if stripped_line.startswith("["):
+                # Toggle the flag based on the detected speaker
+                is_bot_turn = not is_bot_turn
+            elif stripped_line:  # Ignore empty lines
+                # Add subsequent lines to the appropriate list based on the flag
+                if is_bot_turn:
+                    bot_parts.append(stripped_line)
+                else:
+                    user_parts.append(stripped_line)
+
+        # Join the bot parts into a separate string
+        bot_dialogue = "\n".join(bot_parts)
+
+        # Print the separated bot dialogue
+        # print("Bot Dialogue:")
+        # print(bot_dialogue)
         result = {
-            "scenario":output
+            "dialogue": output,
+            "questions": bot_dialogue,
         }
         return result
     except Exception as e:
