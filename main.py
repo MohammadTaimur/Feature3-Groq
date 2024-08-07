@@ -261,15 +261,31 @@ async def generating_scenario(
                     - Make the conversation easy to follow and understand.
                     - Always encase the participant roles in square brackets.
                     - The conversation must never be started by the user.
+                    - There must always be exactly 5 dialogues from the User and 5 dialogues from the Other Person.
     
                     Output Format:  
                     - Situation: {situation}
                     - Dialogue: (Remove the heading "Dialogue")
-                      [User]
-                      dialogue--
                       [Other Person]
-                      dialogue--
-    
+                      dialogue line 1
+                      [User]
+                      dialogue line 2
+                      [Other Person]
+                      dialogue line 3
+                      [User]
+                      dialogue line 4
+                      [Other Person]
+                      dialogue line 5
+                      [User]
+                      dialogue line 6
+                      [Other Person]
+                      dialogue line 7
+                      [User]
+                      dialogue line 8
+                      [Other Person]
+                      dialogue line 9
+                      [User]
+                      dialogue line 10
                      """
                 },
                 {
@@ -282,6 +298,7 @@ async def generating_scenario(
 
         output = chat_completion.choices[0].message.content
         # print(output)
+        # Split the input string into lines
         lines = output.split('\n')
 
         # Initialize empty lists to hold the parts of the conversation
@@ -292,7 +309,7 @@ async def generating_scenario(
         is_bot_turn = False
 
         # Iterate through the lines and categorize them
-        for line in lines:
+        for line in lines[1:]:
             stripped_line = line.strip()
             if stripped_line.startswith("["):
                 # Toggle the flag based on the detected speaker
@@ -304,15 +321,68 @@ async def generating_scenario(
                 else:
                     user_parts.append(stripped_line)
 
-        # Join the bot parts into a separate string
+        # Join the bot and user parts into separate strings
         bot_dialogue = "\n".join(bot_parts)
+        user_dialogue = "\n".join(user_parts)
 
-        # Print the separated bot dialogue
-        # print("Bot Dialogue:")
-        # print(bot_dialogue)
+        bot_dialogue_lines = bot_dialogue.split('\n')
+        user_dialogue_lines = user_dialogue.split('\n')
+
+        # print(bot_dialogue_lines)
+        # print(user_dialogue_lines)
+
+        # Assign the bot dialogue lines to individual variables
+        bot_line_1 = bot_parts[0]
+        bot_line_2 = bot_parts[1]
+        bot_line_3 = bot_parts[2]
+        bot_line_4 = bot_parts[3]
+        bot_line_5 = bot_parts[4]
+
+        # Assign the user dialogue lines to individual variables
+        user_line_1 = user_parts[0]
+        user_line_2 = user_parts[1]
+        user_line_3 = user_parts[2]
+        user_line_4 = user_parts[3]
+        user_line_5 = user_parts[4]
+
+        # print("Bot Dialogue Lines:")
+        # print(f"bot_line_1: {bot_line_1}")
+        # print(f"bot_line_2: {bot_line_2}")
+        # print(f"bot_line_3: {bot_line_3}")
+        # print(f"bot_line_4: {bot_line_4}")
+        # print(f"bot_line_5: {bot_line_5}")
+        #
+        # print("\nUser Dialogue Lines:")
+        # print(f"user_line_1: {user_line_1}")
+        # print(f"user_line_2: {user_line_2}")
+        # print(f"user_line_3: {user_line_3}")
+        # print(f"user_line_4: {user_line_4}")
+        # print(f"user_line_5: {user_line_5}")
+
+        # result = {
+        #     "question_1": bot_line_1,
+        #     "question_2": bot_line_2,
+        #     "question_3": bot_line_3,
+        #     "question_4": bot_line_4,
+        #     "question_5": bot_line_5,
+        #     "user_line_1": user_line_1,
+        #     "user_line_2": user_line_2,
+        #     "user_line_3": user_line_3,
+        #     "user_line_4": user_line_4,
+        #     "user_line_5": user_line_5,
+        #     "dialogue": output,
+        #     "questions": bot_dialogue,
+        # }
         result = {
-            "dialogue": output,
+            "data": [
+                {"question": bot_line_1, "answer": user_line_1},
+                {"question": bot_line_2, "answer": user_line_2},
+                {"question": bot_line_3, "answer": user_line_3},
+                {"question": bot_line_4, "answer": user_line_4},
+                {"question": bot_line_5, "answer": user_line_5}
+            ],
             "questions": bot_dialogue,
+            "dialogue": output
         }
         return result
     except Exception as e:
